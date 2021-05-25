@@ -22,6 +22,8 @@ let folderSelected;
 let addBookmarkShow = false;
 let addFolderShow = false;
 let areFoldersShown = false;
+let listOfFN = [];
+let listOfBN = [];
 
 // risolvere doppi nomi e aggiungere bottone rimuovi
 
@@ -105,11 +107,13 @@ function showSelectListofFolders(listOfFd, fds, selFold) {
     
                 if (f.open == false){
                     document.getElementById(`${f.name}f`).style.display = 'block';
+                    document.getElementById(`${f.name}folder`).style.fontWeight = '900';
                     folderSelected = f;
                     selFold.innerHTML = `Folder selected: ${folderSelected.name}`;
                     showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`), selFold);
                     f.open = true;
                 } else {
+                    document.getElementById(`${f.name}folder`).style.fontWeight = 'normal';
                     folderSelected = undefined;
                     selFold.innerHTML = 'Folder selected: ';
                     document.getElementById(`${f.name}f`).style.display = 'none';
@@ -124,6 +128,7 @@ function showSelectListofFolders(listOfFd, fds, selFold) {
 
         const li = document.createElement('li');
         const a = document.createElement('a');
+        a.setAttribute('id', `${f.name}folder`);
         const ul = document.createElement('ul');
 
         ul.setAttribute('id', `${f.name}f`);
@@ -169,6 +174,7 @@ function showListofFolders(listOfFd, fh) {
                                 })
                             },
                             deleteB : function() {
+                                listOfBN.pop(b.name);
                                 f.urls.pop(b);
                                 listOfFolders = JSON.parse(localStorage.getItem("folderList"));
                                 let foundb = false;
@@ -204,6 +210,7 @@ function showListofFolders(listOfFd, fh) {
                 }
             },
             deleteF : function() {
+                listOfFN.pop(f.name);
                 listOfFd.pop(folderObj);
                 listOfFolders = JSON.parse(localStorage.getItem("folderList"));
                 let foundf = false;
@@ -260,6 +267,8 @@ formFolder.addEventListener('submit', onSubmitFolder);
 
 function onSubmitFolder(e) {
 
+    let sameName = false;
+
     e.preventDefault();
 
     if (folderSelected == undefined) {
@@ -269,6 +278,21 @@ function onSubmitFolder(e) {
             msgFolder.innerHTML = 'Please enter the name of your folder';
 
         } else {
+                
+            if (listOfFN.length > 0) {
+                for (let f of listOfFN) {
+                    if (f == folder.value) {
+                        msgFolder.innerHTML = 'This name already exist, please enter a different name';
+                        sameName = true;
+                    }
+                }
+            }
+
+        }
+
+        if (sameName === false) {
+
+            listOfFN.push(folder.value);
 
             msgFolder.innerHTML = '';
 
@@ -281,14 +305,16 @@ function onSubmitFolder(e) {
                     msgFs.innerHTML = '';
                     
                     if (folderObj.open == false){
+                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
                         document.getElementById(`${folderObj.name}f`).style.display = 'block';
                         folderSelected = folderObj;
-                        selFold.innerHTML = `Folder selected: ${folderSelected.name}`;
-                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), selFold);
+                        sFoldF.innerHTML = `Folder selected: ${folderSelected.name}`;
+                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), sFoldF);
                         folderObj.open = true;
                     } else {
+                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
                         folderSelected = undefined;
-                        selFold.innerHTML = 'Folder selected: ';
+                        sFoldF.innerHTML = 'Folder selected: ';
                         document.getElementById(`${folderObj.name}f`).style.display = 'none';
                         folderObj.open = false;
                     }
@@ -316,6 +342,21 @@ function onSubmitFolder(e) {
             msgFolder.innerHTML = 'Please enter the name of your folder';
 
         } else {
+                
+            if (listOfFN.length > 0) {
+                for (let f of listOfFN) {
+                    if (f == folder.value) {
+                        msgFolder.innerHTML = 'This name already exists, please enter a different name';
+                        sameName = true;
+                    }
+                }
+            }
+
+        }
+
+        if (sameName === false) {
+
+            listOfFN.push(folder.value);
 
             msgFolder.innerHTML = '';
 
@@ -330,12 +371,12 @@ function onSubmitFolder(e) {
                     if (folderObj.open == false){
                         document.getElementById(`${folderObj.name}f`).style.display = 'block';
                         folderSelected = folderObj;
-                        selFold.innerHTML = `Folder selected: ${folderSelected.name}`;
-                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), selFold);
+                        sFoldF.innerHTML = `Folder selected: ${folderSelected.name}`;
+                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), sFoldF);
                         folderObj.open = true;
                     } else {
                         folderSelected = undefined;
-                        selFold.innerHTML = 'Folder selected: ';
+                        sFoldF.innerHTML = 'Folder selected: ';
                         document.getElementById(`${folderObj.name}f`).style.display = 'none';
                         folderObj.open = false;
                     }
@@ -356,6 +397,7 @@ function onSubmitFolder(e) {
 
             folder.value = '';
             folderSelected = undefined;
+            sFoldF.innerHTML = 'Folder selected: ';
 
         }
     }
@@ -370,6 +412,8 @@ function onSubmit(e) {
 
     chrome.tabs.query({'active': true}, function (tabs) {
 
+        let sameName = false;
+
         tabUrl = tabs[0].url;
 
         if (folderSelected == undefined) {
@@ -380,8 +424,23 @@ function onSubmit(e) {
             if (bookmark.value === '') {
 
                 msg.innerHTML = 'Please enter the name of your bookmark';
-    
+
             } else {
+                
+                if (listOfBN.length > 0) {
+                    for (let n of listOfBN) {
+                        if (n == bookmark.value) {
+                            msg.innerHTML = 'This name already exists, please enter a different name';
+                            sameName = true;
+                        }
+                    }
+                }
+
+            }
+    
+            if (sameName === false) {
+
+                listOfBN.push(bookmark.value);
                 
                 msg.innerHTML = '';
                 msgFs.innerHTML = '';
@@ -417,6 +476,7 @@ function onSubmit(e) {
     
                 bookmark.value = '';
                 folderSelected = undefined;
+                sFold.innerHTML = 'Folder selected: ';
     
             }
 
