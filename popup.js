@@ -23,6 +23,8 @@ let addBookmarkShow = false;
 let addFolderShow = false;
 let areFoldersShown = false;
 
+// risolvere doppi nomi e aggiungere bottone rimuovi
+
 function emptyLists(list1, list2) {
     if (list1.innerHTML != '') {
         list1.innerHTML = '';
