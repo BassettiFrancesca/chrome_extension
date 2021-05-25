@@ -154,6 +154,7 @@ function showListofFolders(listOfFd, fh) {
             open : false,
             openFolder : function() {
                 if (f.open == false){
+                    document.getElementById(`${f.name}b`).innerHTML = '';
                     document.getElementById(`${f.name}f`).style.display = 'block';
                     document.getElementById(`${f.name}b`).style.display = 'block';
                     showListofFolders(f.folders, document.getElementById(`${f.name}f`));
@@ -161,21 +162,37 @@ function showListofFolders(listOfFd, fh) {
                         let bookmarkUrl = {
                             url : b.url,
                             name : b.name,
+                            folder : f.name,
                             openUrl : function() {
                                 chrome.tabs.create({
                                     url: b.url
                                 })
+                            },
+                            deleteB : function() {
+                                f.urls.pop(b);
+                                listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+                                let foundb = false;
+                                deleteBookmark(bookmarkUrl, listOfFolders, foundb);
+                                let folderListSerialized = JSON.stringify(listOfFolders);
+                                localStorage.setItem("folderList", folderListSerialized);
+                                document.getElementById(`${b.name}bm`).remove();
                             }
                         }
             
                         let lib = document.createElement('li');
+                        lib.setAttribute('id', `${b.name}bm`);
                         let ab = document.createElement('a');
+                        let db = document.createElement('a');
                 
                         ab.addEventListener('click', bookmarkUrl.openUrl);
                         ab.appendChild(document.createTextNode(`${bookmarkUrl.name}`));
                         ab.style.display = 'block';
+                        db.addEventListener('click', bookmarkUrl.deleteB);
+                        db.appendChild(document.createTextNode('X'));
+                        db.style.display = 'block';
                 
                         lib.appendChild(ab);
+                        lib.appendChild(db);
                 
                         document.getElementById(`${f.name}b`).appendChild(lib);
                     }
@@ -185,6 +202,16 @@ function showListofFolders(listOfFd, fh) {
                     document.getElementById(`${f.name}b`).style.display = 'none';
                     f.open = false;
                 }
+            },
+            deleteF : function() {
+                listOfFd.pop(folderObj);
+                listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+                let foundf = false;
+                deleteFolder(f, listOfFolders, foundf);
+                let folderListSerialized = JSON.stringify(listOfFolders);
+                localStorage.setItem("folderList", folderListSerialized);
+                document.getElementById(`${f.name}fd`).innerHTML = '';
+                document.getElementById(`${f.name}fd`).remove();
             }
         }
 
@@ -197,7 +224,9 @@ function showListofFolders(listOfFd, fh) {
         }
 
         const li = document.createElement('li');
+        li.setAttribute('id', `${f.name}fd`);
         const a = document.createElement('a');
+        const df = document.createElement('a');
         const ulf = document.createElement('ul');
         const ulb = document.createElement('ul');
 
@@ -210,7 +239,12 @@ function showListofFolders(listOfFd, fh) {
         a.appendChild(document.createTextNode(`${f.name}`));
         a.style.display = 'block';
 
+        df.addEventListener('click', f.deleteF);
+        df.appendChild(document.createTextNode('X'));
+        df.style.display = 'block';
+
         li.appendChild(a);
+        li.appendChild(df);
         li.appendChild(ulf);
         li.appendChild(ulb);
 
@@ -308,6 +342,8 @@ function onSubmitFolder(e) {
                 }
             }
 
+            // potrei forse fare un costruttore invece che ripetere
+
             let found = false;
 
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
@@ -353,10 +389,19 @@ function onSubmit(e) {
                 let bookmarkUrl = {
                     url : tabUrl,
                     name : bookmark.value,
+                    folder : folderSelected.name,
                     openUrl : function() {
                         chrome.tabs.create({
                             url: tabUrl
                         })
+                    },
+                    deleteB : function() {
+                        listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+                        let foundb = false;
+                        deleteBookmark(bookmarkUrl, listOfFolders, foundb);
+                        let folderListSerialized = JSON.stringify(listOfFolders);
+                        localStorage.setItem("folderList", folderListSerialized);
+                        document.getElementById(`${bookmarkUrl.name}`).remove();
                     }
                 }
 
@@ -399,6 +444,26 @@ function saveFolder(fs, fo, list, found) {
 
 }
 
+function deleteFolder(fd, list, foundf) {
+
+    if (list.length > 0) {
+        for (let f of list) {
+            if (foundf == true) {
+                break;
+            }
+            if (f.name == fd.name) {
+                list.pop(f);
+                foundf = true;
+            } else {
+                foundf = deleteFolder(fd, f.folders, foundf);
+            }
+        }
+    }
+
+    return foundf;
+
+}
+
 function saveBookmark(fs, bm, list, found) {
 
     if (list.length > 0) {
@@ -416,5 +481,29 @@ function saveBookmark(fs, bm, list, found) {
     }
 
     return found;
+
+}
+
+function deleteBookmark(b, list, foundb) {
+
+    if (list.length > 0) {
+        for (let f of list) {
+            if (foundb == true) {
+                break;
+            }
+            if (f.name == b.folder) {
+                for (let i of f.urls){
+                    if (i.name == b.name) {
+                        f.urls.pop(i);
+                        foundb = true;
+                    }
+                }
+            } else {
+                foundb = deleteBookmark(b, f.folders, foundb);
+            }
+        }
+    }
+
+    return foundb;
 
 }
