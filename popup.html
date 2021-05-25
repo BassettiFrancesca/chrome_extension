@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Bookmarks</title>
+</head>
+<body>
+
+    <a id="show-insert-bookmark">Add bookmark</a>
+
+    <form id="insert-bookmark">
+        <h1>Add bookmark</h1>
+        <div id="msg"></div>
+        <div>
+            <label for="bookmark-id">Name of the bookmark:</label>
+            <input type="text" id="bookmark-id">
+        </div>
+        <div>
+            <p>Select folder: </p>
+            <ul id="folders"></ul>
+            <div id="msg-folders"></div>
+            <div id="folder-selected"></div>
+        </div>
+        <input class="button" type="submit" value="Submit">
+    </form>
+
+    <a id="show-insert-folder">Add folder</a>
+
+    <form id="insert-folder">
+        <h1>Add folder</h1>
+        <div id="msg-f"></div>
+        <div>
+            <label for="folder-id">Name of the folder:</label>
+            <input type="text" id="folder-id">
+        </div>
+        <div>
+            <p>Select folder: </p>
+            <ul id="folders-f"></ul>
+            <div id="folder-selected-f"></div>
+        </div>
+        <input class="button" type="submit" value="Submit">
+    </form>
+
+    <a id="show-folders">Show folders</a>
+
+    <ul id="folder-list"></ul>
+
+    <script type="text/javascript" src="popup.js"></script>
+</body>
+</html>

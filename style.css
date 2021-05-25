@@ -1,0 +1,7 @@
+#show-insert-bookmark, #show-insert-folder, #show-folders {
+    display: block;
+}
+
+#insert-bookmark, #insert-folder, #folder-list {
+    display: none;
+}
