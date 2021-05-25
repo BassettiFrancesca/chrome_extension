@@ -39,6 +39,7 @@ function emptyLists(list1, list2) {
 showBookmark.addEventListener('click', showBookmarks);
 
 function showBookmarks() {
+    folderSelected = undefined;
     if (addBookmarkShow == false) {
         emptyLists(folderList, foldersF);
         folderList.style.display = 'none';
@@ -58,6 +59,7 @@ function showBookmarks() {
 showFolder.addEventListener('click', showFolders);
 
 function showFolders() {
+    folderSelected = undefined;
     if (addFolderShow == false) {
         emptyLists(folders, folderList);
         form.style.display = 'none';
@@ -106,14 +108,25 @@ function showSelectListofFolders(listOfFd, fds, selFold) {
                 msgFs.innerHTML = '';
     
                 if (f.open == false){
-                    document.getElementById(`${f.name}f`).style.display = 'block';
+                    if (document.getElementById(`${f.name}f`).hasChildNodes()) {
+                        document.getElementById(`${f.name}f`).style.display = 'block';
+                    }
                     document.getElementById(`${f.name}folder`).style.fontWeight = '900';
+                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                    }
+                    if (folderSelected) {
+                        folderSelected.open = false;
+                    }
                     folderSelected = f;
                     selFold.innerHTML = `Folder selected: ${folderSelected.name}`;
                     showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`), selFold);
                     f.open = true;
                 } else {
                     document.getElementById(`${f.name}folder`).style.fontWeight = 'normal';
+                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                    }
                     folderSelected = undefined;
                     selFold.innerHTML = 'Folder selected: ';
                     document.getElementById(`${f.name}f`).style.display = 'none';
@@ -306,13 +319,24 @@ function onSubmitFolder(e) {
                     
                     if (folderObj.open == false){
                         document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
-                        document.getElementById(`${folderObj.name}f`).style.display = 'block';
+                        if (document.getElementById(`${folderObj.name}f`).hasChildNodes()) {
+                            document.getElementById(`${folderObj.name}f`).style.display = 'block';
+                        }
+                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                        }
+                        if (folderSelected) {
+                            folderSelected.open = false;
+                        }
                         folderSelected = folderObj;
                         sFoldF.innerHTML = `Folder selected: ${folderSelected.name}`;
                         showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), sFoldF);
                         folderObj.open = true;
                     } else {
                         document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
+                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                        }
                         folderSelected = undefined;
                         sFoldF.innerHTML = 'Folder selected: ';
                         document.getElementById(`${folderObj.name}f`).style.display = 'none';
@@ -369,12 +393,25 @@ function onSubmitFolder(e) {
                     msgFs.innerHTML = '';
                     
                     if (folderObj.open == false){
-                        document.getElementById(`${folderObj.name}f`).style.display = 'block';
+                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
+                        if (document.getElementById(`${folderObj.name}f`).hasChildNodes()) {
+                            document.getElementById(`${folderObj.name}f`).style.display = 'block';
+                        }
+                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                        }
+                        if (folderSelected) {
+                            folderSelected.open = false;
+                        }
                         folderSelected = folderObj;
                         sFoldF.innerHTML = `Folder selected: ${folderSelected.name}`;
                         showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), sFoldF);
                         folderObj.open = true;
                     } else {
+                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
+                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                        }
                         folderSelected = undefined;
                         sFoldF.innerHTML = 'Folder selected: ';
                         document.getElementById(`${folderObj.name}f`).style.display = 'none';
@@ -396,6 +433,9 @@ function onSubmitFolder(e) {
             localStorage.setItem("folderList", listOfFoldersSerialized);
 
             folder.value = '';
+            if (document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+            }
             folderSelected = undefined;
             sFoldF.innerHTML = 'Folder selected: ';
 
@@ -475,6 +515,9 @@ function onSubmit(e) {
                 localStorage.setItem("folderList", folderListSerialized);
     
                 bookmark.value = '';
+                if (document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                    document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                }
                 folderSelected = undefined;
                 sFold.innerHTML = 'Folder selected: ';
     
