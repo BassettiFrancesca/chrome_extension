@@ -1,7 +1,7 @@
-#show-insert-bookmark, #show-insert-folder, #show-folders {
+#show-insert-bookmark, #show-insert-folder, #show-folders, #import, #export, #instructions {
     display: block;
 }
 
-#insert-bookmark, #insert-folder, #folder-list {
+#insert-bookmark, #insert-folder, #folder-list, #instructions-text {
     display: none;
 }

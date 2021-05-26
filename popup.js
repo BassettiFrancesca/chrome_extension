@@ -16,6 +16,12 @@ const sFoldF = document.getElementById('folder-selected-f');
 const showFoldersSaved = document.getElementById('show-folders');
 const folderList = document.getElementById('folder-list');
 
+const im = document.getElementById('import');
+const e = document.getElementById('export');
+
+const instr = document.getElementById('instructions');
+const instrT = document.getElementById('instructions-text'); 
+
 let listOfFolders = [];
 let tabUrl;
 let folderSelected;
@@ -24,15 +30,17 @@ let addFolderShow = false;
 let areFoldersShown = false;
 let listOfFN = [];
 let listOfBN = [];
+let instrOpen = false;
 
-// risolvere doppi nomi e aggiungere bottone rimuovi
-
-function emptyLists(list1, list2) {
-    if (list1.innerHTML != '') {
-        list1.innerHTML = '';
+function emptyLists() {
+    if (folders.innerHTML != '') {
+        folders.innerHTML = '';
     }
-    if (list2.innerHTML != '') {
-        list2.innerHTML = '';
+    if (foldersF.innerHTML != '') {
+        foldersF.innerHTML = '';
+    }
+    if (folderList.innerHTML != '') {
+        folderList.innerHTML = '';
     }
 }
 
@@ -41,14 +49,19 @@ showBookmark.addEventListener('click', showBookmarks);
 function showBookmarks() {
     folderSelected = undefined;
     if (addBookmarkShow == false) {
-        emptyLists(folderList, foldersF);
+        emptyLists();
         folderList.style.display = 'none';
         formFolder.style.display = 'none';
         addBookmarkShow = true;
         form.style.display = 'block';
-        if (localStorage.getItem("folderList") != null) {
+        if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
             showSelectListofFolders(listOfFolders, folders, sFold);
+        } else {
+            let li = document.createElement('li');
+            li.setAttribute('class', 'no-folders');
+            li.appendChild(document.createTextNode('There are no folders yet, click "Add Folder" to add a folder'));
+            folders.appendChild(li);
         }
     } else {
         addBookmarkShow = false;
@@ -61,14 +74,19 @@ showFolder.addEventListener('click', showFolders);
 function showFolders() {
     folderSelected = undefined;
     if (addFolderShow == false) {
-        emptyLists(folders, folderList);
+        emptyLists();
         form.style.display = 'none';
         folderList.style.display = 'none';
         addFolderShow = true;
         formFolder.style.display = 'block';
-        if (localStorage.getItem("folderList") != null) {
+        if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
             showSelectListofFolders(listOfFolders, foldersF, sFoldF);
+        } else {
+            let li = document.createElement('li');
+            li.setAttribute('class', 'no-folders');
+            li.appendChild(document.createTextNode('There are no folders yet, write the name of the folder and click "Submit"'));
+            foldersF.appendChild(li);
         }
     } else {
         addFolderShow = false;
@@ -80,14 +98,19 @@ showFoldersSaved.addEventListener('click', showSavedFolders);
 
 function showSavedFolders() {
     if (areFoldersShown == false) {
-        emptyLists(foldersF, folders);
+        emptyLists();
         form.style.display = 'none';
         formFolder.style.display = 'none';
         areFoldersShown = true;
         folderList.style.display = 'block';
-        if (localStorage.getItem("folderList") != null) {
+        if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
             showListofFolders(listOfFolders, folderList);
+        } else {
+            let li = document.createElement('li');
+            li.setAttribute('class', 'no-folders');
+            li.appendChild(document.createTextNode('There are no folders yet, click "Add Folder" to add a folder'));
+            folderList.appendChild(li);
         }
     } else {
         areFoldersShown = false;
@@ -280,7 +303,7 @@ formFolder.addEventListener('submit', onSubmitFolder);
 
 function onSubmitFolder(e) {
 
-    let sameName = false;
+    let sameName;
 
     e.preventDefault();
 
@@ -291,6 +314,8 @@ function onSubmitFolder(e) {
             msgFolder.innerHTML = 'Please enter the name of your folder';
 
         } else {
+
+            sameName = false;
                 
             if (listOfFN.length > 0) {
                 for (let f of listOfFN) {
@@ -345,7 +370,7 @@ function onSubmitFolder(e) {
                 }
             }
 
-            if (localStorage.getItem("folderList") != null) {
+            if (localStorage.getItem("folderList") != null  && localStorage.getItem("folderList") != '[]') {
                 listOfFolders = JSON.parse(localStorage.getItem("folderList"));
             }
 
@@ -366,6 +391,8 @@ function onSubmitFolder(e) {
             msgFolder.innerHTML = 'Please enter the name of your folder';
 
         } else {
+
+            sameName = false;
                 
             if (listOfFN.length > 0) {
                 for (let f of listOfFN) {
@@ -452,7 +479,7 @@ function onSubmit(e) {
 
     chrome.tabs.query({'active': true}, function (tabs) {
 
-        let sameName = false;
+        let sameName;
 
         tabUrl = tabs[0].url;
 
@@ -466,6 +493,8 @@ function onSubmit(e) {
                 msg.innerHTML = 'Please enter the name of your bookmark';
 
             } else {
+
+                sameName = false;
                 
                 if (listOfBN.length > 0) {
                     for (let n of listOfBN) {
@@ -610,3 +639,59 @@ function deleteBookmark(b, list, foundb) {
     return foundb;
 
 }
+
+instr.addEventListener('click', openInstructions);
+
+function openInstructions() {
+    if (instrOpen == false) {
+        instrOpen = true;
+        instrT.style.display = 'block';
+    } else {
+        instrOpen = false;
+        instrT.style.display = 'none';
+    }
+}
+
+im.addEventListener('click', importJSON);
+
+function readJSONFile(file, callback) {
+    let rawFile = new XMLHttpRequest();
+    rawFile.overrideMimeType("application/json");
+    rawFile.open("GET", file, true);
+    rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4 && rawFile.status == "200") {
+            callback(rawFile.responseText);
+        }
+    }
+    rawFile.send(null);
+}
+
+function importJSON() {
+    folderList.style.display = 'none';
+    formFolder.style.display = 'none';
+    form.style.display = 'none';
+    readJSONFile("./bookmarkstaxonomy.json", function(json){
+        let data = JSON.parse(json);
+        console.log(data);
+        let listOfFoldersSerialized = JSON.stringify(data);
+        localStorage.setItem("folderList", listOfFoldersSerialized);
+        console.log(localStorage);
+    })
+}
+
+e.addEventListener('click', export2json);
+
+function export2json() {
+
+    listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(listOfFolders, null, 2)], {
+      type: "text/plain"
+    }));
+    a.setAttribute("download", "bookmarkstaxonomy.json");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+}
+
