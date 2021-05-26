@@ -4,14 +4,12 @@ const msg = document.getElementById('msg');
 const bookmark = document.getElementById('bookmark-id');
 const folders = document.getElementById('folders');
 const msgFs = document.getElementById('msg-folders');
-const sFold = document.getElementById('folder-selected');
 
 const showFolder = document.getElementById('show-insert-folder');
 const formFolder = document.getElementById('insert-folder');
 const msgFolder = document.getElementById('msg-f');
 const folder = document.getElementById('folder-id');
 const foldersF = document.getElementById('folders-f');
-const sFoldF = document.getElementById('folder-selected-f');
 
 const showFoldersSaved = document.getElementById('show-folders');
 const folderList = document.getElementById('folder-list');
@@ -56,7 +54,7 @@ function showBookmarks() {
         form.style.display = 'block';
         if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
-            showSelectListofFolders(listOfFolders, folders, sFold);
+            showSelectListofFolders(listOfFolders, folders);
         } else {
             let li = document.createElement('li');
             li.setAttribute('class', 'no-folders');
@@ -81,7 +79,7 @@ function showFolders() {
         formFolder.style.display = 'block';
         if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
-            showSelectListofFolders(listOfFolders, foldersF, sFoldF);
+            showSelectListofFolders(listOfFolders, foldersF);
         } else {
             let li = document.createElement('li');
             li.setAttribute('class', 'no-folders');
@@ -119,7 +117,7 @@ function showSavedFolders() {
 }
 
 
-function showSelectListofFolders(listOfFd, fds, selFold) {
+function showSelectListofFolders(listOfFd, fds) {
     fds.innerHTML = '';
     for (let folderObj of listOfFd) {
         let f = {
@@ -142,8 +140,7 @@ function showSelectListofFolders(listOfFd, fds, selFold) {
                         folderSelected.open = false;
                     }
                     folderSelected = f;
-                    selFold.innerHTML = `Folder selected: ${folderSelected.name}`;
-                    showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`), selFold);
+                    showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`));
                     f.open = true;
                 } else {
                     document.getElementById(`${f.name}folder`).style.fontWeight = 'normal';
@@ -151,7 +148,6 @@ function showSelectListofFolders(listOfFd, fds, selFold) {
                         document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
                     }
                     folderSelected = undefined;
-                    selFold.innerHTML = 'Folder selected: ';
                     document.getElementById(`${f.name}f`).style.display = 'none';
                     f.open = false;
                 }
@@ -354,8 +350,7 @@ function onSubmitFolder(e) {
                             folderSelected.open = false;
                         }
                         folderSelected = folderObj;
-                        sFoldF.innerHTML = `Folder selected: ${folderSelected.name}`;
-                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), sFoldF);
+                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`));
                         folderObj.open = true;
                     } else {
                         document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
@@ -363,7 +358,6 @@ function onSubmitFolder(e) {
                             document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
                         }
                         folderSelected = undefined;
-                        sFoldF.innerHTML = 'Folder selected: ';
                         document.getElementById(`${folderObj.name}f`).style.display = 'none';
                         folderObj.open = false;
                     }
@@ -431,8 +425,7 @@ function onSubmitFolder(e) {
                             folderSelected.open = false;
                         }
                         folderSelected = folderObj;
-                        sFoldF.innerHTML = `Folder selected: ${folderSelected.name}`;
-                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`), sFoldF);
+                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`));
                         folderObj.open = true;
                     } else {
                         document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
@@ -440,7 +433,6 @@ function onSubmitFolder(e) {
                             document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
                         }
                         folderSelected = undefined;
-                        sFoldF.innerHTML = 'Folder selected: ';
                         document.getElementById(`${folderObj.name}f`).style.display = 'none';
                         folderObj.open = false;
                     }
@@ -464,11 +456,10 @@ function onSubmitFolder(e) {
                 document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
             }
             folderSelected = undefined;
-            sFoldF.innerHTML = 'Folder selected: ';
 
         }
     }
-    showSelectListofFolders(listOfFolders, foldersF, sFoldF);
+    showSelectListofFolders(listOfFolders, foldersF);
 }
 
 form.addEventListener('submit', onSubmit);
@@ -548,7 +539,6 @@ function onSubmit(e) {
                     document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
                 }
                 folderSelected = undefined;
-                sFold.innerHTML = 'Folder selected: ';
     
             }
 
