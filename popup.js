@@ -21,13 +21,13 @@ const instr = document.getElementById('instructions');
 const instrT = document.getElementById('instructions-text'); 
 
 let listOfFolders = [];
+let listOfFN = [];
+let listOfBN = [];
 let tabUrl;
 let folderSelected;
 let addBookmarkShow = false;
 let addFolderShow = false;
 let areFoldersShown = false;
-let listOfFN = [];
-let listOfBN = [];
 let instrOpen = false;
 
 function emptyLists() {
@@ -303,66 +303,66 @@ function onSubmitFolder(e) {
 
     e.preventDefault();
 
-    if (folderSelected == undefined) {
+    if(folder.value === '') {
 
-        if(folder.value === '') {
+        msgFolder.innerHTML = 'Please enter the name of your folder';
 
-            msgFolder.innerHTML = 'Please enter the name of your folder';
+    } else {
 
-        } else {
-
-            sameName = false;
-                
-            if (listOfFN.length > 0) {
-                for (let f of listOfFN) {
-                    if (f == folder.value) {
-                        msgFolder.innerHTML = 'This name already exist, please enter a different name';
-                        sameName = true;
-                    }
+        sameName = false;
+            
+        if (listOfFN.length > 0) {
+            for (let f of listOfFN) {
+                if (f == folder.value) {
+                    msgFolder.innerHTML = 'This name already exists, please enter a different name';
+                    sameName = true;
                 }
             }
-
         }
 
-        if (sameName === false) {
+    }
 
-            listOfFN.push(folder.value);
+    if (sameName === false) {
 
-            msgFolder.innerHTML = '';
+        listOfFN.push(folder.value);
 
-            let folderObj = {
-                urls : [],
-                folders : [],
-                name : folder.value,
-                open : false,
-                selectFolder : function() {
-                    msgFs.innerHTML = '';
-                    
-                    if (folderObj.open == false){
-                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
-                        if (document.getElementById(`${folderObj.name}f`).hasChildNodes()) {
-                            document.getElementById(`${folderObj.name}f`).style.display = 'block';
-                        }
-                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-                        }
-                        if (folderSelected) {
-                            folderSelected.open = false;
-                        }
-                        folderSelected = folderObj;
-                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`));
-                        folderObj.open = true;
-                    } else {
-                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
-                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-                        }
-                        folderSelected = undefined;
-                        document.getElementById(`${folderObj.name}f`).style.display = 'none';
-                        folderObj.open = false;
+        msgFolder.innerHTML = '';
+
+        let folderObj = {
+            urls : [],
+            folders : [],
+            name : folder.value,
+            open : false,
+            selectFolder : function() {
+                msgFs.innerHTML = '';
+                
+                if (folderObj.open == false){
+                    document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
+                    if (document.getElementById(`${folderObj.name}f`).hasChildNodes()) {
+                        document.getElementById(`${folderObj.name}f`).style.display = 'block';
                     }
+                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                    }
+                    if (folderSelected) {
+                        folderSelected.open = false;
+                    }
+                    folderSelected = folderObj;
+                    showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`));
+                    folderObj.open = true;
+                } else {
+                    document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
+                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                    }
+                    folderSelected = undefined;
+                    document.getElementById(`${folderObj.name}f`).style.display = 'none';
+                    folderObj.open = false;
                 }
             }
+        }
+
+        if (folderSelected == undefined) {
 
             if (localStorage.getItem("folderList") != null  && localStorage.getItem("folderList") != '[]') {
                 listOfFolders = JSON.parse(localStorage.getItem("folderList"));
@@ -376,90 +376,30 @@ function onSubmitFolder(e) {
 
             folder.value = '';
 
-        }
-        
-    } else {
-
-        if(folder.value === '') {
-
-            msgFolder.innerHTML = 'Please enter the name of your folder';
-
         } else {
-
-            sameName = false;
-                
-            if (listOfFN.length > 0) {
-                for (let f of listOfFN) {
-                    if (f == folder.value) {
-                        msgFolder.innerHTML = 'This name already exists, please enter a different name';
-                        sameName = true;
-                    }
-                }
-            }
-
-        }
-
-        if (sameName === false) {
-
-            listOfFN.push(folder.value);
-
-            msgFolder.innerHTML = '';
-
-            let folderObj = {
-                urls : [],
-                folders : [],
-                name : folder.value,
-                open : false,
-                selectFolder : function() {
-                    msgFs.innerHTML = '';
-                    
-                    if (folderObj.open == false){
-                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
-                        if (document.getElementById(`${folderObj.name}f`).hasChildNodes()) {
-                            document.getElementById(`${folderObj.name}f`).style.display = 'block';
-                        }
-                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-                        }
-                        if (folderSelected) {
-                            folderSelected.open = false;
-                        }
-                        folderSelected = folderObj;
-                        showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`));
-                        folderObj.open = true;
-                    } else {
-                        document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
-                        if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                            document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-                        }
-                        folderSelected = undefined;
-                        document.getElementById(`${folderObj.name}f`).style.display = 'none';
-                        folderObj.open = false;
-                    }
-                }
-            }
-
-            // potrei forse fare un costruttore invece che ripetere
 
             let found = false;
 
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
-
+    
             saveFolder(folderSelected, folderObj, listOfFolders, found);
-
+    
             let listOfFoldersSerialized = JSON.stringify(listOfFolders);
-
+    
             localStorage.setItem("folderList", listOfFoldersSerialized);
-
+    
             folder.value = '';
+
             if (document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
                 document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
             }
             folderSelected = undefined;
 
         }
+
+        showSelectListofFolders(listOfFolders, foldersF);
+
     }
-    showSelectListofFolders(listOfFolders, foldersF);
 }
 
 form.addEventListener('submit', onSubmit);
