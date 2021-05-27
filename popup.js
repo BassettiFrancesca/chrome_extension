@@ -621,12 +621,13 @@ function importJSON() {
     msg.innerHTML = '';
     msgFs.innerHTML = '';
     msgFolder.innerHTML = '';
-    folder.innerHTML = '';
-    foldersF.innerHTML = '';
-    folderList.innerHTML = '';
+    emptyLists();
     listOfFN = [];
     listOfBN = [];
     listOfFolders = [];
+    addBookmarkShow = false;
+    addFolderShow = false;
+    areFoldersShown = false;
     form.style.display = 'none';
     formFolder.style.display = 'none';
     folderList.style.display = 'none';
