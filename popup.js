@@ -217,9 +217,14 @@ function showListofFolders(listOfFd, fh) {
                                 })
                             },
                             deleteB : function() {
+                                listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
                                 let i = listOfBN.indexOf(bookmarkUrl.name);
                                 listOfBN.splice(i, 1);
-                                deleteBookmark(f.name, bookmarkUrl.name, listOfFd);
+                                let listOfBNSerialized = JSON.stringify(listOfBN);
+                                localStorage.setItem("bookmarkNames", listOfBNSerialized);
+                                let foundbd = false;
+                                listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+                                delBookmark(f, bookmarkUrl, listOfFolders, foundbd);
                                 let folderListSerialized = JSON.stringify(listOfFolders);
                                 localStorage.setItem("folderList", folderListSerialized);
                                 document.getElementById(`${b.name}bm`).remove();
@@ -251,10 +256,15 @@ function showListofFolders(listOfFd, fh) {
                 }
             },
             deleteF : function() {
+                listOfFN = JSON.parse(localStorage.getItem("folderNames"));
                 let i = listOfFN.indexOf(f.name);
                 listOfFN.splice(i, 1);
+                let listOfFNSerialized = JSON.stringify(listOfFN);
+                localStorage.setItem("folderNames", listOfFNSerialized);
                 deleteAllNames(f);
-                deleteFolder(f.name, listOfFd);
+                let foundfd = false;
+                listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+                delFolder(f, listOfFolders, foundfd);
                 let folderListSerialized = JSON.stringify(listOfFolders);
                 localStorage.setItem("folderList", folderListSerialized);
                 document.getElementById(`${f.name}fd`).innerHTML = '';
@@ -307,6 +317,10 @@ formFolder.addEventListener('submit', onSubmitFolder);
 
 function onSubmitFolder(e) {
 
+    if (localStorage.getItem("folderNames") != null) {
+        listOfFN = JSON.parse(localStorage.getItem("folderNames"));
+    }
+
     let sameName;
 
     e.preventDefault();
@@ -333,6 +347,10 @@ function onSubmitFolder(e) {
     if (sameName === false) {
 
         listOfFN.push(folder.value);
+
+        let listOfFNSerialized = JSON.stringify(listOfFN);
+    
+        localStorage.setItem("folderNames", listOfFNSerialized);
 
         msgFolder.innerHTML = '';
 
@@ -410,88 +428,106 @@ function onSubmitFolder(e) {
     }
 }
 
+async function saveBM() {
+
+    let queryOptions = { active: true, currentWindow: true };
+    let [tab] = await chrome.tabs.query(queryOptions);
+
+    tabUrl = tab.url;
+
+    let sameName;
+
+    if (folderSelected == undefined) {
+
+        msgFs.innerHTML = 'Please select a folder';
+
+    } else {
+        if (bookmark.value === '') {
+
+            msg.innerHTML = 'Please enter the name of your bookmark';
+
+        } else {
+
+            sameName = false;
+            
+            if (listOfBN.length > 0) {
+                for (let n of listOfBN) {
+                    if (n == bookmark.value) {
+                        msg.innerHTML = 'This name already exists, please enter a different name';
+                        sameName = true;
+                    }
+                }
+            }
+
+        }
+
+        if (sameName === false) {
+
+            listOfBN.push(bookmark.value);
+
+            let listOfBNSerialized = JSON.stringify(listOfBN);
+
+            localStorage.setItem("bookmarkNames", listOfBNSerialized);
+            
+            msg.innerHTML = '';
+            msgFs.innerHTML = '';
+
+            let bookmarkUrl = {
+                url : tabUrl,
+                name : bookmark.value,
+                folder : folderSelected.name,
+                openUrl : function() {
+                    chrome.tabs.create({
+                        url: tabUrl
+                    })
+                },
+                deleteB : function() {
+                    listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
+                    let i = listOfBN.indexOf(bookmarkUrl.name);
+                    listOfBN.splice(i, 1);
+                    let listOfBNSerialized = JSON.stringify(listOfBN);
+                    localStorage.setItem("bookmarkNames", listOfBNSerialized);
+                    let foundbd = false;
+                    listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+                    delBookmark(f, bookmarkUrl, listOfFolders, foundbd);
+                    let folderListSerialized = JSON.stringify(listOfFolders);
+                    localStorage.setItem("folderList", folderListSerialized);
+                    document.getElementById(`${b.name}bm`).remove();
+                }
+            }
+
+            listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+
+            let found = false;
+
+            saveBookmark(folderSelected, bookmarkUrl, listOfFolders, found);
+
+            let folderListSerialized = JSON.stringify(listOfFolders);
+
+            localStorage.setItem("folderList", folderListSerialized);
+
+            bookmark.value = '';
+            if (document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
+                document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+            }
+            folderSelected = undefined;
+
+        }
+
+    }
+}
+
 form.addEventListener('submit', onSubmit);
 
 function onSubmit(e) {
 
+    if (localStorage.getItem("bookmarkNames") != null) {
+        listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
+    }
+
     e.preventDefault();
 
-    chrome.tabs.query({'active': true}, function (tabs) {
-
-        let sameName;
-
-        tabUrl = tabs[0].url;
-
-        if (folderSelected == undefined) {
-
-            msgFs.innerHTML = 'Please select a folder';
-
-        } else {
-            if (bookmark.value === '') {
-
-                msg.innerHTML = 'Please enter the name of your bookmark';
-
-            } else {
-
-                sameName = false;
-                
-                if (listOfBN.length > 0) {
-                    for (let n of listOfBN) {
-                        if (n == bookmark.value) {
-                            msg.innerHTML = 'This name already exists, please enter a different name';
-                            sameName = true;
-                        }
-                    }
-                }
-
-            }
-    
-            if (sameName === false) {
-
-                listOfBN.push(bookmark.value);
-                
-                msg.innerHTML = '';
-                msgFs.innerHTML = '';
-
-                let bookmarkUrl = {
-                    url : tabUrl,
-                    name : bookmark.value,
-                    folder : folderSelected.name,
-                    openUrl : function() {
-                        chrome.tabs.create({
-                            url: tabUrl
-                        })
-                    },
-                    deleteB : function() {
-                        let i = listOfBN.indexOf(bookmarkUrl.name);
-                        listOfBN.splice(i, 1);
-                        deleteBookmark(f.name, bookmarkUrl.name, listOfFd);
-                        let folderListSerialized = JSON.stringify(listOfFolders);
-                        localStorage.setItem("folderList", folderListSerialized);
-                        document.getElementById(`${b.name}bm`).remove();
-                    }
-                }
-
-                listOfFolders = JSON.parse(localStorage.getItem("folderList"));
-
-                let found = false;
-
-                saveBookmark(folderSelected, bookmarkUrl, listOfFolders, found);
-
-                let folderListSerialized = JSON.stringify(listOfFolders);
-    
-                localStorage.setItem("folderList", folderListSerialized);
-    
-                bookmark.value = '';
-                if (document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                    document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-                }
-                folderSelected = undefined;
-    
-            }
-
-        }
-    })
+    saveBM();
 }
 
 function saveFolder(fs, fo, list, found) {
@@ -511,6 +547,26 @@ function saveFolder(fs, fo, list, found) {
     }
 
     return found;
+
+}
+
+function delFolder(fo, list, foundfd) {
+
+    if (list.length > 0) {
+        for (let f of list) {
+            if (foundfd == true) {
+                break;
+            }
+            if (f.name == fo.name) {
+                deleteFolder(fo.name, list);
+                foundfd = true;
+            } else {
+                foundfd = delFolder(fo, f.folders, foundfd);
+            }
+        }
+    }
+
+    return foundfd;
 
 }
 
@@ -536,6 +592,8 @@ function deleteAllNames(f) {
         for (let i of f.folders) {
             let j = listOfFN.indexOf(i.name);
             listOfFN.splice(j, 1);
+            let listOfFNSerialized = JSON.stringify(listOfFN);
+            localStorage.setItem("folderNames", listOfFNSerialized);
             deleteAllNames(i);
         }
     }
@@ -543,6 +601,8 @@ function deleteAllNames(f) {
         for (let k of f.urls) {
             let l = listOfBN.indexOf(k.name);
             listOfBN.splice(l, 1);
+            let listOfBNSerialized = JSON.stringify(listOfBN);
+            localStorage.setItem("bookmarkNames", listOfBNSerialized);
         }
     }
 }
@@ -564,6 +624,26 @@ function saveBookmark(fs, bm, list, found) {
     }
 
     return found;
+
+}
+
+function delBookmark(fs, bm, list, foundbd) {
+
+    if (list.length > 0) {
+        for (let f of list) {
+            if (foundbd == true) {
+                break;
+            }
+            if (f.name == fs.name) {
+                deleteBookmark(f.name, bm.name, f.urls);
+                foundbd = true;
+            } else {
+                foundbd = delBookmark(fs, bm, f.folders, foundbd);
+            }
+        }
+    }
+
+    return foundbd;
 
 }
 
@@ -616,15 +696,17 @@ function readJSONFile(file, callback) {
 }
 
 function importJSON() {
+    console.log(listOfFN);
+    console.log(listOfBN);
     bookmark.value = '';
     folder.value = '';
     msg.innerHTML = '';
     msgFs.innerHTML = '';
     msgFolder.innerHTML = '';
     emptyLists();
+    listOfFolders = [];
     listOfFN = [];
     listOfBN = [];
-    listOfFolders = [];
     addBookmarkShow = false;
     addFolderShow = false;
     areFoldersShown = false;
@@ -635,8 +717,30 @@ function importJSON() {
         let data = JSON.parse(json);
         let listOfFoldersSerialized = JSON.stringify(data);
         localStorage.setItem("folderList", listOfFoldersSerialized);
+        listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+        saveNames(listOfFolders);
+        let listOfFNSerialized = JSON.stringify(listOfFN);
+        localStorage.setItem("folderNames", listOfFNSerialized);
+        let listOfBNSerialized = JSON.stringify(listOfBN);
+        localStorage.setItem("bookmarkNames", listOfBNSerialized);
     })
     succImp.style.display = 'block';
+    console.log(listOfFN);
+    console.log(listOfBN);
+}
+
+function saveNames(list) {
+    if (list.length > 0) {
+        for (let f of list) {
+            listOfFN.push(f.name);
+            if (f.urls.length > 0) {
+                for (let b of f.urls) {
+                    listOfBN.push(b.name);
+                }
+            }
+            saveNames(f.folders); 
+        }
+    }
 }
 
 e.addEventListener('click', export2json);
