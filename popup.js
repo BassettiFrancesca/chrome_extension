@@ -10,6 +10,7 @@ const formFolder = document.getElementById('insert-folder');
 const msgFolder = document.getElementById('msg-f');
 const folder = document.getElementById('folder-id');
 const foldersF = document.getElementById('folders-f');
+const msgFF = document.getElementById('msg-folders-f');
 
 const showFoldersSaved = document.getElementById('show-folders');
 const folderList = document.getElementById('folder-list');
@@ -138,6 +139,8 @@ function showSelectListofFolders(listOfFd, fds) {
             open : false,
             selectFolder : function() {
                 msgFs.innerHTML = '';
+                msgFolder.innerHTML = '';
+                msgFF.innerHTML = '';
     
                 if (f.open == false){
                     if (document.getElementById(`${f.name}f`).hasChildNodes()) {
@@ -317,6 +320,8 @@ formFolder.addEventListener('submit', onSubmitFolder);
 
 function onSubmitFolder(e) {
 
+    msgFF.innerHTML = '';
+
     if (localStorage.getItem("folderNames") != null) {
         listOfFN = JSON.parse(localStorage.getItem("folderNames"));
     }
@@ -361,6 +366,8 @@ function onSubmitFolder(e) {
             open : false,
             selectFolder : function() {
                 msgFs.innerHTML = '';
+                msgFolder.innerHTML = '';
+                msgFF.innerHTML = '';
                 
                 if (folderObj.open == false){
                     document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
@@ -408,7 +415,11 @@ function onSubmitFolder(e) {
 
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
     
-            saveFolder(folderSelected, folderObj, listOfFolders, found);
+            found = saveFolder(folderSelected, folderObj, listOfFolders, found);
+
+            if (found == false) {
+                msgFF.innerHTML = 'Error saving the folder';
+            }
     
             let listOfFoldersSerialized = JSON.stringify(listOfFolders);
     
@@ -500,7 +511,13 @@ async function saveBM() {
 
             let found = false;
 
-            saveBookmark(folderSelected, bookmarkUrl, listOfFolders, found);
+            found = saveBookmark(folderSelected, bookmarkUrl, listOfFolders, found);
+
+            if (found == false) {
+                msgFs.innerHTML = 'Error saving the bookmark';
+            } else {
+                msgFs.innerHTML = 'Bookmark saved successfully';
+            }
 
             let folderListSerialized = JSON.stringify(listOfFolders);
 
