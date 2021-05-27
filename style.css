@@ -2,6 +2,6 @@
     display: block;
 }
 
-#insert-bookmark, #insert-folder, #folder-list, #instructions-text {
+#insert-bookmark, #insert-folder, #folder-list, #instructions-text, #import-success, #export-success {
     display: none;
 }
