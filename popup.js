@@ -21,6 +21,8 @@ const e = document.getElementById('export');
 const instr = document.getElementById('instructions');
 const instrT = document.getElementById('instructions-text');
 
+const showImpExp = document.getElementById('show-imp-exp');
+const impExp = document.getElementById('imp-exp');
 const succImp = document.getElementById('import-success');
 const succExp = document.getElementById('export-success');
 const delSuccImp = document.getElementById('del-is');
@@ -34,6 +36,7 @@ let folderSelected;
 let addBookmarkShow = false;
 let addFolderShow = false;
 let areFoldersShown = false;
+let areIEShown = false;
 let instrOpen = false;
 
 function emptyLists() {
@@ -51,14 +54,20 @@ function emptyLists() {
 showBookmark.addEventListener('click', showBookmarks);
 
 function showBookmarks() {
+    msg.innerHTML = '';
+    msgFs.innerHTML = '';
+    msgFolder.innerHTML = '';
+    msgFF.innerHTML = '';
     folderSelected = undefined;
     if (addBookmarkShow == false) {
         emptyLists();
         folderList.style.display = 'none';
         formFolder.style.display = 'none';
+        impExp.style.display = 'none';
         addBookmarkShow = true;
         addFolderShow = false;
         areFoldersShown = false;
+        areIEShown = false;
         form.style.display = 'block';
         if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
@@ -78,14 +87,20 @@ function showBookmarks() {
 showFolder.addEventListener('click', showFolders);
 
 function showFolders() {
+    msg.innerHTML = '';
+    msgFs.innerHTML = '';
+    msgFolder.innerHTML = '';
+    msgFF.innerHTML = '';
     folderSelected = undefined;
     if (addFolderShow == false) {
         emptyLists();
         form.style.display = 'none';
         folderList.style.display = 'none';
+        impExp.style.display = 'none';
         addFolderShow = true;
         addBookmarkShow = false;
         areFoldersShown = false;
+        areIEShown = false;
         formFolder.style.display = 'block';
         if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
@@ -105,13 +120,19 @@ function showFolders() {
 showFoldersSaved.addEventListener('click', showSavedFolders);
 
 function showSavedFolders() {
+    msg.innerHTML = '';
+    msgFs.innerHTML = '';
+    msgFolder.innerHTML = '';
+    msgFF.innerHTML = '';
     if (areFoldersShown == false) {
         emptyLists();
         form.style.display = 'none';
         formFolder.style.display = 'none';
+        impExp.style.display = 'none';
         areFoldersShown = true;
         addFolderShow = false;
         addBookmarkShow = false;
+        areIEShown = false;
         folderList.style.display = 'block';
         if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
             listOfFolders = JSON.parse(localStorage.getItem("folderList"));
@@ -686,6 +707,29 @@ function deleteBookmark(fn, bn, list) {
 
 }
 
+showImpExp.addEventListener('click', showImportExport);
+
+function showImportExport() {
+    msg.innerHTML = '';
+    msgFs.innerHTML = '';
+    msgFolder.innerHTML = '';
+    msgFF.innerHTML = '';
+    if (areIEShown == false) {
+        emptyLists();
+        addBookmarkShow = false;
+        addFolderShow = false;
+        areFoldersShown = false;
+        areIEShown = true;
+        form.style.display = 'none';
+        formFolder.style.display = 'none';
+        folderList.style.display = 'none';
+        impExp.style.display = 'block';
+    } else {
+        areIEShown = false;
+        impExp.style.display = 'none';
+    }
+}
+
 instr.addEventListener('click', openInstructions);
 
 function openInstructions() {
@@ -713,23 +757,11 @@ function readJSONFile(file, callback) {
 }
 
 function importJSON() {
-    console.log(listOfFN);
-    console.log(listOfBN);
     bookmark.value = '';
     folder.value = '';
-    msg.innerHTML = '';
-    msgFs.innerHTML = '';
-    msgFolder.innerHTML = '';
-    emptyLists();
     listOfFolders = [];
     listOfFN = [];
     listOfBN = [];
-    addBookmarkShow = false;
-    addFolderShow = false;
-    areFoldersShown = false;
-    form.style.display = 'none';
-    formFolder.style.display = 'none';
-    folderList.style.display = 'none';
     readJSONFile("./bookmarkstaxonomy.json", function(json){
         let data = JSON.parse(json);
         let listOfFoldersSerialized = JSON.stringify(data);
@@ -742,8 +774,6 @@ function importJSON() {
         localStorage.setItem("bookmarkNames", listOfBNSerialized);
     })
     succImp.style.display = 'block';
-    console.log(listOfFN);
-    console.log(listOfBN);
 }
 
 function saveNames(list) {
