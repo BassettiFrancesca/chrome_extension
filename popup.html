@@ -10,59 +10,59 @@
 </head>
 <body>
 
-    <a id="show-insert-bookmark">Add bookmark</a>
+    <div class="show"><a id="show-insert-bookmark" class="buttons">Add Bookmark</a></div>
 
     <form id="insert-bookmark">
         <div>
-            <label for="bookmark-id">Insert the name of your bookmark:</label>
-            <input type="text" id="bookmark-id" placeholder="Bookmark Name">
+            <label for="bookmark-id" class="labels">Insert the name of your bookmark:</label>
+            <input type="text" id="bookmark-id" placeholder="Bookmark Name" class="text-input">
         </div>
-        <div id="msg"></div>
-        <div>
-            <p>Select folder: </p>
+        <div id="msg" class="msg"></div>
+        <div class="select">
+            <p class="labels">Select folder: </p>
             <ul id="folders"></ul>
-            <div id="msg-folders"></div>
+            <div id="msg-folders" class="msg"></div>
         </div>
-        <input class="button" type="submit" value="Submit">
+        <input class="buttons" type="submit" value="Submit">
     </form>
 
-    <a id="show-insert-folder">Add folder</a>
+    <div class="show"><a id="show-insert-folder" class="buttons">Add Folder</a></div>
 
     <form id="insert-folder">
         <div>
-            <label for="folder-id">Insert the name of your folder:</label>
-            <input type="text" id="folder-id" placeholder="Folder Name">
+            <label for="folder-id" class="labels">Insert the name of your folder:</label>
+            <input type="text" id="folder-id" placeholder="Folder Name" class="text-input">
         </div>
-        <div id="msg-f"></div>
-        <div>
-            <p>Select folder: </p>
+        <div id="msg-f" class="msg"></div>
+        <div class="select">
+            <p class="labels">Select folder: </p>
             <ul id="folders-f"></ul>
-            <div id="msg-folders-f"></div>
+            <div id="msg-folders-f" class="msg"></div>
         </div>
-        <input class="button" type="submit" value="Submit">
+        <input class="buttons" type="submit" value="Submit">
     </form>
 
-    <a id="show-folders">Show folders</a>
+    <div class="show"><a id="show-folders" class="buttons">Show Folders</a></div>
 
     <ul id="folder-list"></ul>
 
-    <a id="show-imp-exp">Import & Export bookmarks' taxonomy</a>
+    <div class="show"><a id="show-imp-exp" class="buttons">Import & Export</a></div>
 
     <div id="imp-exp">
 
-        <a id="instructions">Instructions for importing and exporting the bookmarks' taxonomy</a>
+        <div class="show"><a id="instructions" class="buttons">Instructions</a></div>
         <div id="instructions-text">
-            <p>If you want to export your bookmarks' taxonomy you should click the 'Export' button and it will save a 'bookmarkstaxonomy.json' file in your 'Download' folder.</p>
-            <p>If you want to import a bookmarks' taxonomy you should replace the 'bookmarkstaxonomy.json' file in this plugin's folder with the 'bookmarkstaxonomy.json' file 
-            containing the bookmarks' taxonomy you want to import and then click the 'Import' button.</p>
-            <p>Warning: if you import a bookmarks' taxonomy the bookmarks you have saved will be lost.</p>
+            <p>If you want to export your bookmarks you should click the 'Export' button and it will save a 'bookmarkstaxonomy.json' file in your 'Download' folder.</p>
+            <p>If you want to import bookmarks you should replace the 'bookmarkstaxonomy.json' file in this plugin's folder with the 'bookmarkstaxonomy.json' file 
+            containing the bookmarks you want to import and then click the 'Import' button.</p>
+            <p>Warning: if you import external bookmarks the bookmarks you have saved will be lost.</p>
         </div>
 
-        <a id="import">Import</a>
-        <div id="import-success"><p>The bookmarks' taxonomy has been successfully imported</p> <span id="del-is">X</span></div>
+        <div class="show"><a id="import" class="buttons">Import</a></div>
+        <div id="import-success"><p>The bookmarks have been imported successfully</p> <span id="del-is">X</span></div>
 
-        <a id="export">Export</a>
-        <div id="export-success"><p>Your bookmarks' taxonomy has been successfully exported</p> <span id="del-es">X</span></div>
+        <div class="show"><a id="export" class="buttons">Export</a></div>
+        <div id="export-success"><p>Your bookmarks have been exported successfully</p> <span id="del-es">X</span></div>
 
     </div>
 

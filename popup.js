@@ -60,6 +60,10 @@ function showBookmarks() {
     msgFF.innerHTML = '';
     folderSelected = undefined;
     if (addBookmarkShow == false) {
+        showBookmark.setAttribute('class', 'open');
+        showFoldersSaved.setAttribute('class', 'buttons');
+        showFolder.setAttribute('class', 'buttons');
+        showImpExp.setAttribute('class', 'buttons');
         emptyLists();
         folderList.style.display = 'none';
         formFolder.style.display = 'none';
@@ -75,10 +79,11 @@ function showBookmarks() {
         } else {
             let li = document.createElement('li');
             li.setAttribute('class', 'no-folders');
-            li.appendChild(document.createTextNode('There are no folders yet, click "Add Folder" to add a folder'));
+            li.appendChild(document.createTextNode('Click "Add Folder" to add a folder'));
             folders.appendChild(li);
         }
     } else {
+        showBookmark.setAttribute('class', 'buttons');
         addBookmarkShow = false;
         form.style.display = 'none';
     }
@@ -93,6 +98,10 @@ function showFolders() {
     msgFF.innerHTML = '';
     folderSelected = undefined;
     if (addFolderShow == false) {
+        showFolder.setAttribute('class', 'open');
+        showFoldersSaved.setAttribute('class', 'buttons');
+        showBookmark.setAttribute('class', 'buttons');
+        showImpExp.setAttribute('class', 'buttons');
         emptyLists();
         form.style.display = 'none';
         folderList.style.display = 'none';
@@ -108,10 +117,11 @@ function showFolders() {
         } else {
             let li = document.createElement('li');
             li.setAttribute('class', 'no-folders');
-            li.appendChild(document.createTextNode('There are no folders yet, write the name of the folder and click "Submit"'));
+            li.appendChild(document.createTextNode('Write the name of the folder and click "Submit"'));
             foldersF.appendChild(li);
         }
     } else {
+        showFolder.setAttribute('class', 'buttons');
         addFolderShow = false;
         formFolder.style.display = 'none';
     }
@@ -125,6 +135,10 @@ function showSavedFolders() {
     msgFolder.innerHTML = '';
     msgFF.innerHTML = '';
     if (areFoldersShown == false) {
+        showFoldersSaved.setAttribute('class', 'open');
+        showFolder.setAttribute('class', 'buttons');
+        showBookmark.setAttribute('class', 'buttons');
+        showImpExp.setAttribute('class', 'buttons');
         emptyLists();
         form.style.display = 'none';
         formFolder.style.display = 'none';
@@ -140,10 +154,11 @@ function showSavedFolders() {
         } else {
             let li = document.createElement('li');
             li.setAttribute('class', 'no-folders');
-            li.appendChild(document.createTextNode('There are no folders yet, click "Add Folder" to add a folder'));
+            li.appendChild(document.createTextNode('Click "Add Folder" to add a folder'));
             folderList.appendChild(li);
         }
     } else {
+        showFoldersSaved.setAttribute('class', 'buttons');
         areFoldersShown = false;
         folderList.style.display = 'none';
     }
@@ -715,6 +730,10 @@ function showImportExport() {
     msgFolder.innerHTML = '';
     msgFF.innerHTML = '';
     if (areIEShown == false) {
+        showImpExp.setAttribute('class', 'open');
+        showFolder.setAttribute('class', 'buttons');
+        showBookmark.setAttribute('class', 'buttons');
+        showFoldersSaved.setAttribute('class', 'buttons');
         emptyLists();
         addBookmarkShow = false;
         addFolderShow = false;
@@ -725,6 +744,7 @@ function showImportExport() {
         folderList.style.display = 'none';
         impExp.style.display = 'block';
     } else {
+        showImpExp.setAttribute('class', 'buttons');
         areIEShown = false;
         impExp.style.display = 'none';
     }
