@@ -1,0 +1,8 @@
+Click "Add Folder" to add a folder then write the name of the folder and click "Submit".
+
+If you want to export your bookmarks you should click the 'Export' button and it will save a 'bookmarkstaxonomy.json' file in your 'Download' folder.
+
+If you want to import bookmarks you should replace the 'bookmarkstaxonomy.json' file in this plugin's folder with the 'bookmarkstaxonomy.json' 
+file containing the bookmarks you want to import and then click the 'Import' button.
+
+Warning: if you import external bookmarks the bookmarks you have saved will be lost.
