@@ -11,7 +11,7 @@
     font-family: Tahoma, "Trebuchet MS", Helvetica, Arial, sans-serif;
     font-weight: bold;
     letter-spacing: .05em;
-    color: #757575;
+    color: #9e9e9e;
 }
 
 li {
@@ -19,7 +19,7 @@ li {
 }
 
 ul {
-    padding-inline-start: 0;
+    padding-inline-start: 20px;
 }
 
 .buttons, .open {
@@ -95,4 +95,35 @@ input.buttons:hover, .buttons:hover {
 
 form {
     margin-top: 10px;
+}
+
+.selected {
+    color: #252525;
+    font-weight: bold;
+}
+
+.not-selected {
+    color: #5e5e5e;
+    font-weight: normal;
+}
+
+#warning {
+    color: #252525;
+}
+
+.container {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+}
+
+.int-container {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    margin: 0;
 }

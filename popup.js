@@ -183,20 +183,18 @@ function showSelectListofFolders(listOfFd, fds) {
                     if (document.getElementById(`${f.name}f`).hasChildNodes()) {
                         document.getElementById(`${f.name}f`).style.display = 'block';
                     }
-                    document.getElementById(`${f.name}folder`).style.fontWeight = '900';
-                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-                    }
+                    document.getElementById(`${f.name}folder`).setAttribute('class', 'selected');
                     if (folderSelected) {
                         folderSelected.open = false;
+                        document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
                     }
                     folderSelected = f;
                     showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`));
                     f.open = true;
                 } else {
-                    document.getElementById(`${f.name}folder`).style.fontWeight = 'normal';
-                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                    document.getElementById(`${f.name}folder`).setAttribute('class', 'not-selected');
+                    if (folderSelected) {
+                        document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
                     }
                     folderSelected = undefined;
                     document.getElementById(`${f.name}f`).style.display = 'none';
@@ -212,6 +210,7 @@ function showSelectListofFolders(listOfFd, fds) {
         const li = document.createElement('li');
         const a = document.createElement('a');
         a.setAttribute('id', `${f.name}folder`);
+        a.setAttribute('class', 'not-selected');
         const ul = document.createElement('ul');
 
         ul.setAttribute('id', `${f.name}f`);
@@ -242,6 +241,7 @@ function showListofFolders(listOfFd, fh) {
             open : false,
             openFolder : function() {
                 if (f.open == false){
+                    document.getElementById(`${f.name}icon`).innerHTML = 'folder_open';
                     document.getElementById(`${f.name}d`).style.display = 'none';
                     document.getElementById(`${f.name}b`).innerHTML = '';
                     document.getElementById(`${f.name}f`).style.display = 'block';
@@ -315,6 +315,7 @@ function showListofFolders(listOfFd, fh) {
                     }
                     f.open = true;
                 } else {
+                    document.getElementById(`${f.name}icon`).innerHTML = 'folder';
                     document.getElementById(`${f.name}f`).style.display = 'none';
                     document.getElementById(`${f.name}b`).style.display = 'none';
                     document.getElementById(`${f.name}d`).style.display = 'none';
@@ -355,26 +356,37 @@ function showListofFolders(listOfFd, fh) {
 
         const li = document.createElement('li');
         li.setAttribute('id', `${f.name}fd`);
+        const i = document.createElement('i');
         const a = document.createElement('a');
-        const df = document.createElement('a');
+        const df = document.createElement('i');
         const ulf = document.createElement('ul');
         const ulb = document.createElement('ul');
         const check = document.createElement('p');
         const yes = document.createElement('a');
         const no = document.createElement('a');
+        const containerIn = document.createElement('p');
+        const container = document.createElement('p');
+
+        container.setAttribute('class', 'container');
+        containerIn.setAttribute('class', 'int-container');
+
+        i.setAttribute('class', 'material-icons');
+        i.innerHTML = 'folder';
+        i.style.fontSize = '20px';
+        i.setAttribute('id', `${f.name}icon`);
 
         ulf.setAttribute('id', `${f.name}f`);
         ulb.setAttribute('id', `${f.name}b`);
         ulf.setAttribute('display', 'block');
         ulb.setAttribute('display', 'block');
 
-        a.addEventListener('click', f.openFolder);
+        containerIn.addEventListener('click', f.openFolder);
         a.appendChild(document.createTextNode(`${f.name}`));
-        a.style.display = 'block';
 
         df.addEventListener('click', f.checkDelete);
-        df.appendChild(document.createTextNode('X'));
-        df.style.display = 'block';
+        df.setAttribute('class', 'material-icons');
+        df.innerHTML = 'clear';
+        df.style.fontSize = '18px';
 
         check.appendChild(document.createTextNode('Do you want to delete it? '));
         yes.appendChild(document.createTextNode('Yes '));
@@ -389,8 +401,11 @@ function showListofFolders(listOfFd, fh) {
         no.setAttribute('class', 'yn');
         check.style.display = 'none';
 
-        li.appendChild(a);
-        li.appendChild(df);
+        containerIn.appendChild(i);
+        containerIn.appendChild(a);
+        container.appendChild(containerIn);
+        container.appendChild(df);
+        li.appendChild(container);
         li.appendChild(check);
         li.appendChild(ulf);
         li.appendChild(ulb);
@@ -457,23 +472,21 @@ function onSubmitFolder(e) {
                 msgFF.innerHTML = '';
                 
                 if (folderObj.open == false){
-                    document.getElementById(`${folderObj.name}folder`).style.fontWeight = '900';
+                    document.getElementById(`${folderObj.name}folder`).setAttribute('class', 'selected');
                     if (document.getElementById(`${folderObj.name}f`).hasChildNodes()) {
                         document.getElementById(`${folderObj.name}f`).style.display = 'block';
                     }
-                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-                    }
                     if (folderSelected) {
                         folderSelected.open = false;
+                        document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
                     }
                     folderSelected = folderObj;
                     showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`));
                     folderObj.open = true;
                 } else {
-                    document.getElementById(`${folderObj.name}folder`).style.fontWeight = 'normal';
-                    if (folderSelected && document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                        document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
+                    document.getElementById(`${folderObj.name}folder`).setAttribute('class', 'not-selected');
+                    if (folderSelected){
+                        document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected')
                     }
                     folderSelected = undefined;
                     document.getElementById(`${folderObj.name}f`).style.display = 'none';
@@ -514,9 +527,8 @@ function onSubmitFolder(e) {
     
             folder.value = '';
 
-            if (document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-            }
+            document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
+
             folderSelected = undefined;
 
         }
@@ -593,9 +605,9 @@ async function saveBM() {
             localStorage.setItem("folderList", folderListSerialized);
 
             bookmark.value = '';
-            if (document.getElementById(`${folderSelected.name}folder`).style.fontWeight) {
-                document.getElementById(`${folderSelected.name}folder`).style.fontWeight = 'normal';
-            }
+
+            document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
+
             folderSelected = undefined;
             showSelectListofFolders(listOfFolders, folders);
         }

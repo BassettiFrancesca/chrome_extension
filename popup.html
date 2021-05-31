@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script type="text/javascript" src="popup.js" defer></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <title>Bookmarks' taxonomy</title>
 </head>
 <body>
@@ -55,7 +56,7 @@
             <p>If you want to export your bookmarks you should click the 'Export' button and it will save a 'bookmarkstaxonomy.json' file in your 'Download' folder.</p>
             <p>If you want to import bookmarks you should replace the 'bookmarkstaxonomy.json' file in this plugin's folder with the 'bookmarkstaxonomy.json' file 
             containing the bookmarks you want to import and then click the 'Import' button.</p>
-            <p><span>Warning:</span> if you import external bookmarks the bookmarks you have saved will be lost.</p>
+            <p><span id="warning">Warning:</span> if you import external bookmarks the bookmarks you have saved will be lost.</p>
         </div>
 
         <div class="show"><a id="import" class="buttons">Import</a></div>
