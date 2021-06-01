@@ -183,6 +183,7 @@ function showSelectListofFolders(listOfFd, fds) {
                     if (document.getElementById(`${f.name}f`).hasChildNodes()) {
                         document.getElementById(`${f.name}f`).style.display = 'block';
                     }
+                    document.getElementById(`${f.name}icon`).innerHTML = 'folder_open';
                     document.getElementById(`${f.name}folder`).setAttribute('class', 'selected');
                     if (folderSelected) {
                         folderSelected.open = false;
@@ -192,6 +193,7 @@ function showSelectListofFolders(listOfFd, fds) {
                     showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`));
                     f.open = true;
                 } else {
+                    document.getElementById(`${f.name}icon`).innerHTML = 'folder';
                     document.getElementById(`${f.name}folder`).setAttribute('class', 'not-selected');
                     if (folderSelected) {
                         document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
@@ -208,26 +210,33 @@ function showSelectListofFolders(listOfFd, fds) {
         }
 
         const li = document.createElement('li');
+        const i = document.createElement('span');
         const a = document.createElement('a');
+        const container = document.createElement('p');
         a.setAttribute('id', `${f.name}folder`);
         a.setAttribute('class', 'not-selected');
         const ul = document.createElement('ul');
 
+        container.setAttribute('class', 'container-sel');
+
+        i.setAttribute('class', 'material-icons');
+        i.innerHTML = 'folder';
+        i.style.fontSize = '20px';
+        i.setAttribute('id', `${f.name}icon`);
+
         ul.setAttribute('id', `${f.name}f`);
         ul.setAttribute('display', 'block');
 
-        a.addEventListener('click', f.selectFolder);
+        container.addEventListener('click', f.selectFolder);
         a.appendChild(document.createTextNode(`${f.name}`));
-        a.style.display = 'block';
 
-        li.appendChild(a);
+        container.appendChild(i);
+        container.appendChild(a);
+        li.appendChild(container);
         li.appendChild(ul);
     
         fds.appendChild(li);
 
-        if (document.getElementById(`${f.name}f`) == undefined) {
-            fds.appendChild(li); 
-        }
     }
 }
 
@@ -282,33 +291,52 @@ function showListofFolders(listOfFd, fh) {
                         let lib = document.createElement('li');
                         lib.setAttribute('id', `${b.name}bm`);
                         let ab = document.createElement('a');
-                        let db = document.createElement('a');
+                        let i = document.createElement('span');
+                        let db = document.createElement('span');
                         let check = document.createElement('p');
                         let yes = document.createElement('a');
                         let no = document.createElement('a');
+                        let yn = document.createElement('p');
+                        let checkCont = document.createElement('p');
+                        let containerIn = document.createElement('p');
+                        let container = document.createElement('p');
+
+                        container.setAttribute('class', 'container');
+                        containerIn.setAttribute('class', 'int-container');
+
+                        i.setAttribute('class', 'material-icons-sharp');
+                        i.innerHTML = 'bookmark';
+                        i.style.fontSize = '20px';
+                        i.setAttribute('id', `${f.name}icon`);
                 
-                        ab.addEventListener('click', bookmarkUrl.openUrl);
+                        containerIn.addEventListener('click', bookmarkUrl.openUrl);
                         ab.appendChild(document.createTextNode(`${bookmarkUrl.name}`));
                         ab.style.display = 'block';
                         db.addEventListener('click', bookmarkUrl.checkDelete);
-                        db.appendChild(document.createTextNode('X'));
-                        db.style.display = 'block';
+                        db.setAttribute('class', 'material-icons delete');
+                        db.innerHTML = 'clear';
+                        db.style.fontSize = '18px';
 
-                        check.appendChild(document.createTextNode('Do you want to delete it? '));
+                        checkCont.appendChild(document.createTextNode(`Do you want to delete "${bookmarkUrl.name}"? `));
                         yes.appendChild(document.createTextNode('Yes '));
                         yes.addEventListener('click', bookmarkUrl.deleteB);
                         no.appendChild(document.createTextNode('No'));
                         no.addEventListener('click', bookmarkUrl.dontDelete);
-                        check.appendChild(yes);
-                        check.appendChild(no);
+                        yn.appendChild(yes);
+                        yn.appendChild(no);
+                        check.appendChild(checkCont);
+                        check.appendChild(yn);
                         check.setAttribute('class', 'check');
                         check.setAttribute('id', `${bookmarkUrl.name}d`);
                         yes.setAttribute('class', 'yn');
                         no.setAttribute('class', 'yn');
                         check.style.display = 'none';
-                
-                        lib.appendChild(ab);
-                        lib.appendChild(db);
+
+                        containerIn.appendChild(i);
+                        containerIn.appendChild(ab);
+                        container.appendChild(containerIn);
+                        container.appendChild(db);
+                        lib.appendChild(container);
                         lib.appendChild(check);
                 
                         document.getElementById(`${f.name}b`).appendChild(lib);
@@ -356,12 +384,14 @@ function showListofFolders(listOfFd, fh) {
 
         const li = document.createElement('li');
         li.setAttribute('id', `${f.name}fd`);
-        const i = document.createElement('i');
+        const i = document.createElement('span');
         const a = document.createElement('a');
-        const df = document.createElement('i');
+        const df = document.createElement('span');
         const ulf = document.createElement('ul');
         const ulb = document.createElement('ul');
         const check = document.createElement('p');
+        const checkCont = document.createElement('p');
+        const yn = document.createElement('p');
         const yes = document.createElement('a');
         const no = document.createElement('a');
         const containerIn = document.createElement('p');
@@ -384,17 +414,19 @@ function showListofFolders(listOfFd, fh) {
         a.appendChild(document.createTextNode(`${f.name}`));
 
         df.addEventListener('click', f.checkDelete);
-        df.setAttribute('class', 'material-icons');
+        df.setAttribute('class', 'material-icons delete');
         df.innerHTML = 'clear';
         df.style.fontSize = '18px';
 
-        check.appendChild(document.createTextNode('Do you want to delete it? '));
+        checkCont.appendChild(document.createTextNode(`Do you want to delete "${f.name}"? `));
         yes.appendChild(document.createTextNode('Yes '));
         yes.addEventListener('click', f.deleteF);
         no.appendChild(document.createTextNode('No'));
         no.addEventListener('click', f.dontDelete);
-        check.appendChild(yes);
-        check.appendChild(no);
+        yn.appendChild(yes);
+        yn.appendChild(no);
+        check.appendChild(checkCont);
+        check.appendChild(yn);
         check.setAttribute('class', 'check');
         check.setAttribute('id', `${f.name}d`);
         yes.setAttribute('class', 'yn');
@@ -412,9 +444,6 @@ function showListofFolders(listOfFd, fh) {
 
         fh.appendChild(li); 
 
-        if (document.getElementById(`${f.name}f`) == undefined) {
-             fh.appendChild(li); 
-        }
     }
 }
 
