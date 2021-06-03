@@ -374,6 +374,9 @@ function showListofFolders(listOfFd, fl) {
                 listOfFN.splice(i, 1);
                 let listOfFNSerialized = JSON.stringify(listOfFN);
                 localStorage.setItem("folderNames", listOfFNSerialized);
+                if (localStorage.getItem("bookmarkNames") != null) {
+                    listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
+                }
                 deleteAllNames(f);
                 let foundfd = false;
                 listOfFolders = JSON.parse(localStorage.getItem("folderList"));
