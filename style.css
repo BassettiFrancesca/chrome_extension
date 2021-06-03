@@ -122,11 +122,15 @@ form {
     cursor: pointer;
 }
 
-.container-sel, .int-container {
+.container-sel, .int-container, .int-container-dx {
     display: flex;
     align-items: center;
     margin: 0;
     cursor: pointer;
+}
+
+.int-container-dx {
+    margin-left: 15px;
 }
 
 .int-container span, .container-sel span {
@@ -161,7 +165,7 @@ form {
 }
 
 .delete {
-    margin-left: 10px;
+    margin-left: 3px;
 }
 
 .cross {
@@ -170,4 +174,14 @@ form {
 
 .cross:hover {
     color: #252525;
+}
+
+.modify {
+    overflow: auto;
+    margin: 15px 0 20px 0;
+}
+
+.modify .buttons {
+    margin: 10px;
+    width: 60px;
 }
