@@ -279,6 +279,10 @@ function showListofFolders(listOfFd, fl) {
                 }
             },
             checkDelete : function() {
+                let checks = document.getElementsByClassName('check');
+                for (let c of checks) {
+                    c.style.display = 'none';
+                }
                 document.getElementById(`${f.name}d`).style.display = 'block';
                 document.getElementById(`${f.name}m`).style.display = 'none';
             },
@@ -303,9 +307,14 @@ function showListofFolders(listOfFd, fl) {
                 localStorage.setItem("folderList", folderListSerialized);
                 document.getElementById(`${f.name}fd`).innerHTML = '';
                 document.getElementById(`${f.name}fd`).remove();
+                deleteItem(f.name, listOfFd);
             },
             modifyName : function() {
                 msgFIn.innerHTML = '';
+                let mod = document.getElementsByClassName('modify');
+                for (let m of mod) {
+                    m.style.display = 'none';
+                }
                 document.getElementById(`${f.name}m`).style.display = 'block';
                 document.getElementById(`${f.name}d`).style.display = 'none';
             },
@@ -505,6 +514,10 @@ function showListofBookmarks(f) {
                 })
             },
             checkDelete : function() {
+                let checks = document.getElementsByClassName('check');
+                for (let c of checks) {
+                    c.style.display = 'none';
+                }
                 document.getElementById(`${bookmarkUrl.name}db`).style.display = 'block';
                 document.getElementById(`${bookmarkUrl.name}mb`).style.display = 'none';
             },
@@ -524,9 +537,14 @@ function showListofBookmarks(f) {
                 let folderListSerialized = JSON.stringify(listOfFolders);
                 localStorage.setItem("folderList", folderListSerialized);
                 document.getElementById(`${bookmarkUrl.name}bm`).remove();
+                deleteItem(bookmarkUrl.name, f.urls);
             },
             modifyName : function() {
                 msgFInb.innerHTML = '';
+                let mod = document.getElementsByClassName('modify');
+                for (let m of mod) {
+                    m.style.display = 'none';
+                }
                 document.getElementById(`${bookmarkUrl.name}mb`).style.display = 'block';
                 document.getElementById(`${bookmarkUrl.name}db`).style.display = 'none';
             },

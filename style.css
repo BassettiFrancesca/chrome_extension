@@ -122,11 +122,19 @@ form {
     cursor: pointer;
 }
 
+.container span:hover {
+    color: #757575;
+}
+
 .container-sel, .int-container, .int-container-dx {
     display: flex;
     align-items: center;
     margin: 0;
     cursor: pointer;
+}
+
+.container-sel:hover, .int-container:hover, .int-container-dx:hover {
+    color: #757575;
 }
 
 .int-container-dx {
@@ -184,4 +192,12 @@ form {
 .modify .buttons {
     margin: 10px;
     width: 60px;
+}
+
+.int-container a:hover {
+    color: #757575;
+}
+
+.container-sel span:hover{
+    color: #757575;
 }
