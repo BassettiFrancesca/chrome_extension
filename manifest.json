@@ -1,6 +1,6 @@
 {
-  "name": "Bookmarks taxonomy",
-  "description": "A taxonomy of the bookmarks",
+  "name": "Bookmark taxonomy",
+  "description": "A taxonomy of bookmarks",
   "version": "1.0",
   "manifest_version": 3,
   "permissions": ["storage", "tabs", "activeTab"],

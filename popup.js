@@ -178,41 +178,46 @@ function showSelectListofFolders(listOfFd, fds) {
                 msgFs.innerHTML = '';
                 msgFolder.innerHTML = '';
                 msgFF.innerHTML = '';
-    
-                if (f.open == false){
-                    if (document.getElementById(`${f.name}f`).hasChildNodes()) {
-                        document.getElementById(`${f.name}f`).style.display = 'block';
-                    }
-                    document.getElementById(`${f.name}icon`).innerHTML = 'folder_open';
-                    document.getElementById(`${f.name}folder`).setAttribute('class', 'selected');
+
+                if (folderSelected == f) {
+                    folderSelected = undefined;
+                    document.getElementById(`${f.name}folder`).setAttribute('class', 'not-selected');
+                } else {
                     if (folderSelected) {
-                        folderSelected.open = false;
                         document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
                     }
                     folderSelected = f;
-                    showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`));
+                    document.getElementById(`${f.name}folder`).setAttribute('class', 'selected');
+                }
+    
+                if (f.open == false){
+                    document.getElementById(`${f.name}icon`).innerHTML = 'folder_open';
                     f.open = true;
+                    if (document.getElementById(`${f.name}f`).hasChildNodes()) {
+                        document.getElementById(`${f.name}f`).style.display = 'block';
+                    }
+                    if (f.folders.length > 0) {
+                        showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`));
+                    }
                 } else {
                     document.getElementById(`${f.name}icon`).innerHTML = 'folder';
-                    document.getElementById(`${f.name}folder`).setAttribute('class', 'not-selected');
-                    if (folderSelected) {
-                        document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
-                    }
-                    folderSelected = undefined;
                     document.getElementById(`${f.name}f`).style.display = 'none';
                     f.open = false;
                 }
             }
         }
 
-        for (let fd of folderObj.folders) {
-            f.folders.push(fd);
+        if (folderObj.folders.length > 0) {
+            for (let fd of folderObj.folders) {
+                f.folders.push(fd);
+            } 
         }
 
         const li = document.createElement('li');
         const i = document.createElement('span');
         const a = document.createElement('a');
         const container = document.createElement('p');
+        a.style.display = 'block';
         a.setAttribute('id', `${f.name}folder`);
         a.setAttribute('class', 'not-selected');
         const ul = document.createElement('ul');
@@ -225,7 +230,6 @@ function showSelectListofFolders(listOfFd, fds) {
         i.setAttribute('id', `${f.name}icon`);
 
         ul.setAttribute('id', `${f.name}f`);
-        ul.setAttribute('display', 'block');
 
         container.addEventListener('click', f.selectFolder);
         a.appendChild(document.createTextNode(`${f.name}`));
@@ -240,8 +244,8 @@ function showSelectListofFolders(listOfFd, fds) {
     }
 }
 
-function showListofFolders(listOfFd, fh) {
-    fh.innerHTML = '';
+function showListofFolders(listOfFd, fl) {
+    fl.innerHTML = '';
     for (let folderObj of listOfFd) {
         let f = {
             urls : [],
@@ -253,93 +257,100 @@ function showListofFolders(listOfFd, fh) {
                     document.getElementById(`${f.name}icon`).innerHTML = 'folder_open';
                     document.getElementById(`${f.name}d`).style.display = 'none';
                     document.getElementById(`${f.name}b`).innerHTML = '';
-                    document.getElementById(`${f.name}f`).style.display = 'block';
-                    document.getElementById(`${f.name}b`).style.display = 'block';
-                    showListofFolders(f.folders, document.getElementById(`${f.name}f`));
-                    for (let b of f.urls) {
-                        let bookmarkUrl = {
-                            url : b.url,
-                            name : b.name,
-                            folder : f.name,
-                            openUrl : function() {
-                                chrome.tabs.create({
-                                    url: b.url
-                                })
-                            },
-                            checkDelete : function() {
-                                document.getElementById(`${bookmarkUrl.name}d`).style.display = 'block';
-                            },
-                            dontDelete : function() {
-                                document.getElementById(`${bookmarkUrl.name}d`).style.display = 'none';
-                            },
-                            deleteB : function() {
-                                document.getElementById(`${bookmarkUrl.name}d`).style.display = 'none';
-                                listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
-                                let i = listOfBN.indexOf(bookmarkUrl.name);
-                                listOfBN.splice(i, 1);
-                                let listOfBNSerialized = JSON.stringify(listOfBN);
-                                localStorage.setItem("bookmarkNames", listOfBNSerialized);
-                                let foundbd = false;
-                                listOfFolders = JSON.parse(localStorage.getItem("folderList"));
-                                delBookmark(f, bookmarkUrl, listOfFolders, foundbd);
-                                let folderListSerialized = JSON.stringify(listOfFolders);
-                                localStorage.setItem("folderList", folderListSerialized);
-                                document.getElementById(`${bookmarkUrl.name}bm`).remove();
+                    if (document.getElementById(`${f.name}f`).hasChildNodes()) {
+                        document.getElementById(`${f.name}f`).style.display = 'block';
+                    }
+                    if (document.getElementById(`${f.name}b`).hasChildNodes()) {
+                        document.getElementById(`${f.name}b`).style.display = 'block';
+                    }
+                    if (f.folders.length > 0) {
+                        showListofFolders(f.folders, document.getElementById(`${f.name}f`));
+                    }
+                    if (f.urls.length > 0) {
+                        for (let b of f.urls) {
+                            let bookmarkUrl = {
+                                url : b.url,
+                                name : b.name,
+                                folder : f.name,
+                                openUrl : function() {
+                                    chrome.tabs.create({
+                                        url: b.url
+                                    })
+                                },
+                                checkDelete : function() {
+                                    document.getElementById(`${bookmarkUrl.name}d`).style.display = 'block';
+                                },
+                                dontDelete : function() {
+                                    document.getElementById(`${bookmarkUrl.name}d`).style.display = 'none';
+                                },
+                                deleteB : function() {
+                                    document.getElementById(`${bookmarkUrl.name}d`).style.display = 'none';
+                                    listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
+                                    let i = listOfBN.indexOf(bookmarkUrl.name);
+                                    listOfBN.splice(i, 1);
+                                    let listOfBNSerialized = JSON.stringify(listOfBN);
+                                    localStorage.setItem("bookmarkNames", listOfBNSerialized);
+                                    let foundbd = false;
+                                    listOfFolders = JSON.parse(localStorage.getItem("folderList"));
+                                    delBookmark(f, bookmarkUrl, listOfFolders, foundbd);
+                                    let folderListSerialized = JSON.stringify(listOfFolders);
+                                    localStorage.setItem("folderList", folderListSerialized);
+                                    document.getElementById(`${bookmarkUrl.name}bm`).remove();
+                                }
                             }
+                
+                            let lib = document.createElement('li');
+                            lib.setAttribute('id', `${b.name}bm`);
+                            let ab = document.createElement('a');
+                            let i = document.createElement('span');
+                            let db = document.createElement('span');
+                            let check = document.createElement('p');
+                            let yes = document.createElement('a');
+                            let no = document.createElement('a');
+                            let yn = document.createElement('p');
+                            let checkCont = document.createElement('p');
+                            let containerIn = document.createElement('p');
+                            let container = document.createElement('p');
+    
+                            container.setAttribute('class', 'container');
+                            containerIn.setAttribute('class', 'int-container');
+    
+                            i.setAttribute('class', 'material-icons-sharp');
+                            i.innerHTML = 'bookmark';
+                            i.style.fontSize = '20px';
+                    
+                            containerIn.addEventListener('click', bookmarkUrl.openUrl);
+                            ab.appendChild(document.createTextNode(`${bookmarkUrl.name}`));
+                            ab.style.display = 'block';
+                            db.addEventListener('click', bookmarkUrl.checkDelete);
+                            db.setAttribute('class', 'material-icons delete');
+                            db.innerHTML = 'clear';
+                            db.style.fontSize = '18px';
+    
+                            checkCont.appendChild(document.createTextNode(`Do you want to delete "${bookmarkUrl.name}"?`));
+                            yes.appendChild(document.createTextNode('Yes'));
+                            yes.addEventListener('click', bookmarkUrl.deleteB);
+                            no.appendChild(document.createTextNode('No'));
+                            no.addEventListener('click', bookmarkUrl.dontDelete);
+                            yn.appendChild(yes);
+                            yn.appendChild(no);
+                            check.appendChild(checkCont);
+                            check.appendChild(yn);
+                            check.setAttribute('class', 'check');
+                            check.setAttribute('id', `${bookmarkUrl.name}d`);
+                            yes.setAttribute('class', 'yn');
+                            no.setAttribute('class', 'yn');
+                            check.style.display = 'none';
+    
+                            containerIn.appendChild(i);
+                            containerIn.appendChild(ab);
+                            container.appendChild(containerIn);
+                            container.appendChild(db);
+                            lib.appendChild(container);
+                            lib.appendChild(check);
+                    
+                            document.getElementById(`${f.name}b`).appendChild(lib);
                         }
-            
-                        let lib = document.createElement('li');
-                        lib.setAttribute('id', `${b.name}bm`);
-                        let ab = document.createElement('a');
-                        let i = document.createElement('span');
-                        let db = document.createElement('span');
-                        let check = document.createElement('p');
-                        let yes = document.createElement('a');
-                        let no = document.createElement('a');
-                        let yn = document.createElement('p');
-                        let checkCont = document.createElement('p');
-                        let containerIn = document.createElement('p');
-                        let container = document.createElement('p');
-
-                        container.setAttribute('class', 'container');
-                        containerIn.setAttribute('class', 'int-container');
-
-                        i.setAttribute('class', 'material-icons-sharp');
-                        i.innerHTML = 'bookmark';
-                        i.style.fontSize = '20px';
-                        i.setAttribute('id', `${f.name}icon`);
-                
-                        containerIn.addEventListener('click', bookmarkUrl.openUrl);
-                        ab.appendChild(document.createTextNode(`${bookmarkUrl.name}`));
-                        ab.style.display = 'block';
-                        db.addEventListener('click', bookmarkUrl.checkDelete);
-                        db.setAttribute('class', 'material-icons delete');
-                        db.innerHTML = 'clear';
-                        db.style.fontSize = '18px';
-
-                        checkCont.appendChild(document.createTextNode(`Do you want to delete "${bookmarkUrl.name}"? `));
-                        yes.appendChild(document.createTextNode('Yes '));
-                        yes.addEventListener('click', bookmarkUrl.deleteB);
-                        no.appendChild(document.createTextNode('No'));
-                        no.addEventListener('click', bookmarkUrl.dontDelete);
-                        yn.appendChild(yes);
-                        yn.appendChild(no);
-                        check.appendChild(checkCont);
-                        check.appendChild(yn);
-                        check.setAttribute('class', 'check');
-                        check.setAttribute('id', `${bookmarkUrl.name}d`);
-                        yes.setAttribute('class', 'yn');
-                        no.setAttribute('class', 'yn');
-                        check.style.display = 'none';
-
-                        containerIn.appendChild(i);
-                        containerIn.appendChild(ab);
-                        container.appendChild(containerIn);
-                        container.appendChild(db);
-                        lib.appendChild(container);
-                        lib.appendChild(check);
-                
-                        document.getElementById(`${f.name}b`).appendChild(lib);
                     }
                     f.open = true;
                 } else {
@@ -374,12 +385,16 @@ function showListofFolders(listOfFd, fh) {
             }
         }
 
-        for (let ur of folderObj.urls) {
-            f.urls.push(ur);
+        if (folderObj.urls.length > 0) {
+            for (let ur of folderObj.urls) {
+                f.urls.push(ur);
+            }
         }
 
-        for (let fd of folderObj.folders) {
-            f.folders.push(fd);
+        if (folderObj.folders.length > 0) {
+            for (let fd of folderObj.folders) {
+                f.folders.push(fd);
+            }
         }
 
         const li = document.createElement('li');
@@ -412,14 +427,15 @@ function showListofFolders(listOfFd, fh) {
 
         containerIn.addEventListener('click', f.openFolder);
         a.appendChild(document.createTextNode(`${f.name}`));
+        a.style.display = 'block';
 
         df.addEventListener('click', f.checkDelete);
         df.setAttribute('class', 'material-icons delete');
         df.innerHTML = 'clear';
         df.style.fontSize = '18px';
 
-        checkCont.appendChild(document.createTextNode(`Do you want to delete "${f.name}"? `));
-        yes.appendChild(document.createTextNode('Yes '));
+        checkCont.appendChild(document.createTextNode(`Do you want to delete "${f.name}"?`));
+        yes.appendChild(document.createTextNode('Yes'));
         yes.addEventListener('click', f.deleteF);
         no.appendChild(document.createTextNode('No'));
         no.addEventListener('click', f.dontDelete);
@@ -442,7 +458,7 @@ function showListofFolders(listOfFd, fh) {
         li.appendChild(ulf);
         li.appendChild(ulb);
 
-        fh.appendChild(li); 
+        fl.appendChild(li); 
 
     }
 }
@@ -494,73 +510,36 @@ function onSubmitFolder(e) {
             urls : [],
             folders : [],
             name : folder.value,
-            open : false,
-            selectFolder : function() {
-                msgFs.innerHTML = '';
-                msgFolder.innerHTML = '';
-                msgFF.innerHTML = '';
-                
-                if (folderObj.open == false){
-                    document.getElementById(`${folderObj.name}folder`).setAttribute('class', 'selected');
-                    if (document.getElementById(`${folderObj.name}f`).hasChildNodes()) {
-                        document.getElementById(`${folderObj.name}f`).style.display = 'block';
-                    }
-                    if (folderSelected) {
-                        folderSelected.open = false;
-                        document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
-                    }
-                    folderSelected = folderObj;
-                    showSelectListofFolders(folderObj.folders, document.getElementById(`${folderObj.name}f`));
-                    folderObj.open = true;
-                } else {
-                    document.getElementById(`${folderObj.name}folder`).setAttribute('class', 'not-selected');
-                    if (folderSelected){
-                        document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected')
-                    }
-                    folderSelected = undefined;
-                    document.getElementById(`${folderObj.name}f`).style.display = 'none';
-                    folderObj.open = false;
-                }
-            }
+            open : false
+        }
+
+        if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
+            listOfFolders = JSON.parse(localStorage.getItem("folderList"));
         }
 
         if (folderSelected == undefined) {
 
-            if (localStorage.getItem("folderList") != null && localStorage.getItem("folderList") != '[]') {
-                listOfFolders = JSON.parse(localStorage.getItem("folderList"));
-            }
-
             listOfFolders.push(folderObj);
-
-            let listOfFoldersSerialized = JSON.stringify(listOfFolders);
-
-            localStorage.setItem("folderList", listOfFoldersSerialized);
-
-            folder.value = '';
 
         } else {
 
             let found = false;
-
-            listOfFolders = JSON.parse(localStorage.getItem("folderList"));
     
             found = saveFolder(folderSelected, folderObj, listOfFolders, found);
 
             if (found == false) {
                 msgFF.innerHTML = 'Error saving the folder';
             }
-    
-            let listOfFoldersSerialized = JSON.stringify(listOfFolders);
-    
-            localStorage.setItem("folderList", listOfFoldersSerialized);
-    
-            folder.value = '';
-
-            document.getElementById(`${folderSelected.name}folder`).setAttribute('class', 'not-selected');
 
             folderSelected = undefined;
 
         }
+
+        let listOfFoldersSerialized = JSON.stringify(listOfFolders);
+
+        localStorage.setItem("folderList", listOfFoldersSerialized);
+
+        folder.value = '';
 
         showSelectListofFolders(listOfFolders, foldersF);
 
@@ -573,6 +552,10 @@ async function saveBM() {
     let [tab] = await chrome.tabs.query(queryOptions);
 
     tabUrl = tab.url;
+
+    if (localStorage.getItem("bookmarkNames") != null) {
+        listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
+    }
 
     let sameName;
 
@@ -647,11 +630,6 @@ async function saveBM() {
 form.addEventListener('submit', onSubmit);
 
 function onSubmit(e) {
-
-    if (localStorage.getItem("bookmarkNames") != null) {
-        listOfBN = JSON.parse(localStorage.getItem("bookmarkNames"));
-    }
-
     e.preventDefault();
 
     saveBM();
@@ -719,18 +697,18 @@ function deleteAllNames(f) {
         for (let i of f.folders) {
             let j = listOfFN.indexOf(i.name);
             listOfFN.splice(j, 1);
-            let listOfFNSerialized = JSON.stringify(listOfFN);
-            localStorage.setItem("folderNames", listOfFNSerialized);
             deleteAllNames(i);
         }
+        let listOfFNSerialized = JSON.stringify(listOfFN);
+        localStorage.setItem("folderNames", listOfFNSerialized);
     }
     if (f.urls.length > 0) {
         for (let k of f.urls) {
             let l = listOfBN.indexOf(k.name);
             listOfBN.splice(l, 1);
-            let listOfBNSerialized = JSON.stringify(listOfBN);
-            localStorage.setItem("bookmarkNames", listOfBNSerialized);
         }
+        let listOfBNSerialized = JSON.stringify(listOfBN);
+        localStorage.setItem("bookmarkNames", listOfBNSerialized);
     }
 }
 
@@ -834,7 +812,6 @@ function importJSON() {
     listOfFolders = [];
     listOfFN = [];
     listOfBN = [];
-    // se il file è vuoto da errore, magari catch?
     readJSONFile("./bookmarkstaxonomy.json", function(json){
         let data = JSON.parse(json);
         let listOfFoldersSerialized = JSON.stringify(data);
