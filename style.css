@@ -201,3 +201,7 @@ form {
 .container-sel span:hover{
     color: #757575;
 }
+
+.container-sel a:hover{
+    font-weight: bold;
+}
