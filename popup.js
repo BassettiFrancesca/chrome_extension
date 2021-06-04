@@ -767,6 +767,10 @@ function onSubmitFolder(e) {
             let listOfFNSerialized = JSON.stringify(listOfFN);
         
             localStorage.setItem("folderNames", listOfFNSerialized);
+            
+            let listOfFoldersSerialized = JSON.stringify(listOfFolders);
+
+            localStorage.setItem("folderList", listOfFoldersSerialized);
 
         } else {
 
