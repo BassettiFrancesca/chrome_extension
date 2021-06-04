@@ -39,7 +39,6 @@ let addFolderShow = false;
 let areFoldersShown = false;
 let areIEShown = false;
 let instrOpen = false;
-let modifyId;
 
 function emptyLists() {
     if (folders.innerHTML != '') {
@@ -194,9 +193,7 @@ function showSelectListofFolders(listOfFd, fds) {
                 if (f.open == false){
                     document.getElementById(`${f.name}icon`).innerHTML = 'folder_open';
                     f.open = true;
-                    if (document.getElementById(`${f.name}f`).hasChildNodes()) {
-                        document.getElementById(`${f.name}f`).style.display = 'block';
-                    }
+                    document.getElementById(`${f.name}f`).style.display = 'block';
                     if (f.folders.length > 0) {
                         showSelectListofFolders(f.folders, document.getElementById(`${f.name}f`));
                     }
@@ -787,15 +784,15 @@ function onSubmitFolder(e) {
                 let listOfFNSerialized = JSON.stringify(listOfFN);
             
                 localStorage.setItem("folderNames", listOfFNSerialized);
+
+                let listOfFoldersSerialized = JSON.stringify(listOfFolders);
+
+                localStorage.setItem("folderList", listOfFoldersSerialized);
             }
 
             folderSelected = undefined;
 
         }
-
-        let listOfFoldersSerialized = JSON.stringify(listOfFolders);
-
-        localStorage.setItem("folderList", listOfFoldersSerialized);
 
         folder.value = '';
 
@@ -867,11 +864,11 @@ async function saveBM() {
                 let listOfBNSerialized = JSON.stringify(listOfBN);
     
                 localStorage.setItem("bookmarkNames", listOfBNSerialized);
+
+                let folderListSerialized = JSON.stringify(listOfFolders);
+
+                localStorage.setItem("folderList", folderListSerialized);    
             }
-
-            let folderListSerialized = JSON.stringify(listOfFolders);
-
-            localStorage.setItem("folderList", folderListSerialized);
 
             bookmark.value = '';
 
