@@ -924,7 +924,7 @@ function saveModFolder(name, fo, list, found) {
                 f.name = name;
                 found = true;
             } else {
-                found = saveFolder(name, fo, f.folders, found);
+                found = saveModFolder(name, fo, f.folders, found);
             }
         }
     }
